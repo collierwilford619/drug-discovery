@@ -145,7 +145,7 @@ async def run_psichic_model_loop(state: Dict[str, Any], config) -> None:
             bt.logging.info("Selecting molecules from PyRMD package.")
 
             num_molecules_of_selection = 64
-            num_thread_count = 64
+            num_thread_count = 32
             molecules = get_molecules(num_molecules_of_selection, num_thread_count)
 
             bt.logging.info(
