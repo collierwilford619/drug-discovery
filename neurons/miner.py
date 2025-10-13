@@ -254,7 +254,8 @@ async def run_psichic_model_loop(state: Dict[str, Any], config) -> None:
                 else:
                     final_score = scores_sum
 
-                bt.logging.info(f"Last candidate product: {state["candidate_product"]}")
+                bt.logging.info(f"Calculated top molecule: {top_molecules}")
+                bt.logging.info(f"Last candidate product: {state['candidate_product']}")
 
                 if final_score > state["best_score"]:
                     state["best_score"] = final_score
@@ -263,26 +264,6 @@ async def run_psichic_model_loop(state: Dict[str, Any], config) -> None:
                     )
                     bt.logging.info(
                         f"New best score: {state['best_score']}, Candidates: {state['candidate_product']}"
-                    )
-
-                bt.logging.info(f"New candidate product: {state["candidate_product"]}")
-
-                wallet, subtensor, metagraph, miner_uid, epoch_length = (
-                    await setup_bittensor_objects(config)
-                )
-                current_block = await subtensor.get_current_block()
-                next_epoch_block = (
-                    (current_block // state["epoch_length"]) + 1
-                ) * state["epoch_length"]
-                blocks_until_epoch = next_epoch_block - current_block
-
-                bt.logging.info(
-                    f"Current block: {current_block}, Epoch length: {state['epoch_length']}, Next epoch block: {next_epoch_block}, Blocks until epoch: {blocks_until_epoch}"
-                )
-
-                if state["candidate_product"] and blocks_until_epoch <= 20:
-                    bt.logging.info(
-                        f"Close to epoch end ({blocks_until_epoch} blocks remaining), attempting submission..."
                     )
                     if state["candidate_product"] != state["last_submitted_product"]:
                         bt.logging.info("Attempting to submit new candidate...")
@@ -294,6 +275,7 @@ async def run_psichic_model_loop(state: Dict[str, Any], config) -> None:
                         bt.logging.info(
                             "Skipping submission - same product as last submission"
                         )
+
             else:
                 bt.logging.info("Top molecules are empty.")
 
