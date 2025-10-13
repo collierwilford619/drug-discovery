@@ -237,7 +237,7 @@ async def run_psichic_model_loop(state: Dict[str, Any], config) -> None:
             df.sort_values(by=["combined_score"], ascending=[False], inplace=True)
             df.reset_index(drop=True, inplace=True)
 
-            top_molecules = df.iloc[:10]
+            top_molecules = df.iloc[:1]
 
             bt.logging.info(f"Top 10 molecules: {top_molecules}")
 
