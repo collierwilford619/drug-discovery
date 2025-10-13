@@ -1,7 +1,6 @@
 import argparse
 import asyncio
 import base64
-import bittensor as bt
 import datetime
 import hashlib
 import os
@@ -10,13 +9,14 @@ import sys
 import tempfile
 import traceback
 
+from dotenv import load_dotenv
+from config.config_loader import load_config
+from typing import Any, Dict, Tuple, cast
+import bittensor as bt
 from bittensor.core.chain_data.utils import decode_metadata
 from bittensor.core.errors import MetadataError
-from dotenv import load_dotenv
 from substrateinterface import SubstrateInterface
-from typing import Any, Dict, Tuple, cast
 
-from config.config_loader import load_config
 from utils import (
     get_molecules,
     get_sequence_from_protein_code,
