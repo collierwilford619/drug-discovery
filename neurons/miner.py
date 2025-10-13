@@ -8,13 +8,17 @@ import pandas as pd
 import sys
 import tempfile
 import traceback
-
-from typing import Any, Dict, Tuple, cast
 import bittensor as bt
 from bittensor.core.chain_data.utils import decode_metadata
 from bittensor.core.errors import MetadataError
 from substrateinterface import SubstrateInterface
 
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(BASE_DIR)
+
+from typing import Any, Dict, Tuple, cast
+from dotenv import load_dotenv
+from config.config_loader import load_config
 from utils import (
     get_molecules,
     get_sequence_from_protein_code,
@@ -25,12 +29,6 @@ from utils import (
 )
 from PSICHIC.wrapper import PsichicWrapper
 from btdr import QuicknetBittensorDrandTimelock
-
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.append(BASE_DIR)
-
-from dotenv import load_dotenv
-from config.config_loader import load_config
 
 
 def parse_arguments() -> argparse.Namespace:
