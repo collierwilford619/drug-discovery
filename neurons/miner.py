@@ -314,14 +314,18 @@ async def submit_response(state: Dict[str, Any], config) -> None:
 
     bt.logging.info(f"Starting submission process for product: {candidate_product}")
 
-    wallet, subtensor, metagraph, miner_uid, epoch_length = (
-        await setup_bittensor_objects(config)
-    )
+    try:
+        wallet, subtensor, metagraph, miner_uid, epoch_length = (
+            await setup_bittensor_objects(config)
+        )
 
-    current_block = await subtensor.get_current_block()
-    encrypted_response = state["bdt"].encrypt(
-        state["miner_uid"], candidate_product, current_block
-    )
+        current_block = await subtensor.get_current_block()
+        encrypted_response = state["bdt"].encrypt(
+            state["miner_uid"], candidate_product, current_block
+        )
+    except Exception as e:
+        bt.logging.info("Error was occurred during getting current block.")
+
     bt.logging.info(f"Encrypted response generated successfully")
 
     tmp_file = tempfile.NamedTemporaryFile(delete=True)
