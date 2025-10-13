@@ -1,7 +1,6 @@
 import yaml
 import os
 
-
 def load_config(path: str = "config/config.yaml"):
     """
     Loads configuration from a YAML file.
@@ -18,7 +17,7 @@ def load_config(path: str = "config/config.yaml"):
 
     no_submission_blocks = config["competition"]["no_submission_blocks"]
     boltz_weight = config["competition"]["boltz_weight"]
-
+    
     validation_config = config["molecule_validation"]
     antitarget_weight = validation_config["antitarget_weight"]
     min_heavy_atoms = validation_config["min_heavy_atoms"]
@@ -46,26 +45,26 @@ def load_config(path: str = "config/config.yaml"):
     random_valid_reaction = reaction_config["random_valid_reaction"]
 
     return {
-        "weekly_target": weekly_target,
-        "num_antitargets": num_antitargets,
-        "no_submission_blocks": no_submission_blocks,
-        "antitarget_weight": antitarget_weight,
-        "min_heavy_atoms": min_heavy_atoms,
-        "min_rotatable_bonds": min_rotatable_bonds,
-        "max_rotatable_bonds": max_rotatable_bonds,
-        "num_molecules": num_molecules,
-        "entropy_bonus_threshold": entropy_bonus_threshold,
-        "entropy_start_weight": entropy_start_weight,
-        "entropy_start_epoch": entropy_start_epoch,
-        "entropy_step_size": entropy_step_size,
-        "molecule_repetition_weight": molecule_repetition_weight,
-        "molecule_repetition_threshold": molecule_repetition_threshold,
-        "random_valid_reaction": random_valid_reaction,
-        "num_molecules_boltz": num_molecules_boltz,
-        "boltz_metric": boltz_metric,
-        "binding_pocket": binding_pocket,
-        "max_distance": max_distance,
-        "force": force,
-        "boltz_weight": boltz_weight,
-        "sample_selection": sample_selection,
+        'weekly_target': weekly_target,
+        'num_antitargets': num_antitargets,
+        'no_submission_blocks': no_submission_blocks,
+        'antitarget_weight': antitarget_weight,
+        'min_heavy_atoms': min_heavy_atoms,
+        'min_rotatable_bonds': min_rotatable_bonds,
+        'max_rotatable_bonds': max_rotatable_bonds,
+        'num_molecules': num_molecules,
+        'entropy_bonus_threshold': entropy_bonus_threshold,
+        'entropy_start_weight': entropy_start_weight,
+        'entropy_start_epoch': entropy_start_epoch,
+        'entropy_step_size': entropy_step_size,
+        'molecule_repetition_weight': molecule_repetition_weight,
+        'molecule_repetition_threshold': molecule_repetition_threshold,
+        'random_valid_reaction': random_valid_reaction,
+        'num_molecules_boltz': num_molecules_boltz,
+        'boltz_metric': boltz_metric,
+        'binding_pocket': binding_pocket,
+        'max_distance': max_distance,
+        'force': force,
+        'boltz_weight': boltz_weight,
+        'sample_selection': sample_selection
     }
