@@ -9,8 +9,6 @@ import sys
 import tempfile
 import traceback
 
-from dotenv import load_dotenv
-from config.config_loader import load_config
 from typing import Any, Dict, Tuple, cast
 import bittensor as bt
 from bittensor.core.chain_data.utils import decode_metadata
@@ -30,6 +28,9 @@ from btdr import QuicknetBittensorDrandTimelock
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(BASE_DIR)
+
+from dotenv import load_dotenv
+from config.config_loader import load_config
 
 
 def parse_arguments() -> argparse.Namespace:
