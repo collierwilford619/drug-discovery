@@ -7896,9 +7896,9 @@ def get_molecules(molecule_count, thread_count):
         while len(molecules) < molecule_count:
             iteration += 1
 
-            roleA = random.sample(roleA_molecules, 10)
-            roleB = random.sample(roleB_molecules, 10)
-            roleC = random.sample(roleC_molecules, 10)
+            roleA = random.sample(roleA_molecules, 4)
+            roleB = random.sample(roleB_molecules, 4)
+            roleC = random.sample(roleC_molecules, 4)
 
             batch_collected = 0
             for res in pool.imap_unordered(

@@ -142,9 +142,9 @@ async def run_psichic_model_loop(state: Dict[str, Any], config) -> None:
             if state["shutdown_event"].is_set():
                 break
 
-            bt.logging.info("Getting molecules with PyRMD study datas.")
+            bt.logging.info("Selecting molecules from PyRMD package.")
 
-            num_molecules_of_selection = 1000
+            num_molecules_of_selection = 64
             num_thread_count = 64
             molecules = get_molecules(num_molecules_of_selection, num_thread_count)
 
@@ -159,7 +159,7 @@ async def run_psichic_model_loop(state: Dict[str, Any], config) -> None:
                 product_names.append(molecule_info[0])
                 product_smiles.append(molecule_info[1])
 
-            bt.logging.info(f"Product names: {product_names}")
+            bt.logging.info(f"Selected product names: {product_names}")
 
             chunk = {
                 "product_name": product_names,
@@ -175,6 +175,10 @@ async def run_psichic_model_loop(state: Dict[str, Any], config) -> None:
 
             target_scores = []
             antitarget_scores = []
+
+            bt.logging.info(
+                "Inference task of target protein was started with selected molecules"
+            )
 
             for target_protein in state["current_challenge_targets"]:
                 if target_protein not in state["psichic_models"]:
@@ -196,6 +200,10 @@ async def run_psichic_model_loop(state: Dict[str, Any], config) -> None:
                     df["product_smiles"].tolist()
                 )
                 target_scores.append(scores[state["psichic_result_column_name"]])
+
+            bt.logging.info(
+                "Inference task of anti-target protein was started with selected molecules"
+            )
 
             for antitarget_protein in state["current_challenge_antitargets"]:
                 if antitarget_protein not in state["psichic_models"]:
@@ -232,6 +240,8 @@ async def run_psichic_model_loop(state: Dict[str, Any], config) -> None:
 
             top_molecules = df.iloc[:10]
 
+            bt.logging.info(f"Top 10 molecules: {top_molecules}")
+
             if not top_molecules.empty:
                 entropy = compute_maccs_entropy(
                     top_molecules["product_smiles"].tolist()
@@ -245,7 +255,7 @@ async def run_psichic_model_loop(state: Dict[str, Any], config) -> None:
                 else:
                     final_score = scores_sum
 
-                bt.logging.info(state["candidate_product"])
+                bt.logging.info(f"Last candidate product: {state["candidate_product"]}")
 
                 if final_score > state["best_score"]:
                     state["best_score"] = final_score
@@ -256,7 +266,8 @@ async def run_psichic_model_loop(state: Dict[str, Any], config) -> None:
                         f"New best score: {state['best_score']}, Candidates: {state['candidate_product']}"
                     )
 
-                bt.logging.info("Re-initializing subtensor.")
+                bt.logging.info(f"New candidate product: {state["candidate_product"]}")
+
                 wallet, subtensor, metagraph, miner_uid, epoch_length = (
                     await setup_bittensor_objects(config)
                 )
@@ -266,7 +277,7 @@ async def run_psichic_model_loop(state: Dict[str, Any], config) -> None:
                 ) * state["epoch_length"]
                 blocks_until_epoch = next_epoch_block - current_block
 
-                bt.logging.debug(
+                bt.logging.info(
                     f"Current block: {current_block}, Epoch length: {state['epoch_length']}, Next epoch block: {next_epoch_block}, Blocks until epoch: {blocks_until_epoch}"
                 )
 
@@ -471,12 +482,12 @@ async def run_miner(config: argparse.Namespace) -> None:
             state["inference_task"] = asyncio.create_task(
                 run_psichic_model_loop(state, config)
             )
-            bt.logging.debug("Inference started on startup proteins.")
+            bt.logging.info("Inference started on startup proteins.")
         except Exception as e:
             bt.logging.error(f"Error starting inference: {e}")
 
     while True:
-        bt.logging.info("Main epoch-based loop is running")
+        bt.logging.info("Entering main miner loop...")
         try:
             current_block = await subtensor.get_current_block()
 
@@ -506,7 +517,7 @@ async def run_miner(config: argparse.Namespace) -> None:
                 if "inference_task" in state and state["inference_task"]:
                     if not state["inference_task"].done():
                         state["shutdown_event"].set()
-                        bt.logging.debug("Shutdown event set for old inference task.")
+                        bt.logging.info("Shutdown event set for old inference task.")
                         await state["inference_task"]
 
                 state["candidate_product"] = None
@@ -582,7 +593,7 @@ async def run_miner(config: argparse.Namespace) -> None:
                     state["inference_task"] = asyncio.create_task(
                         run_psichic_model_loop(state, config)
                     )
-                    bt.logging.debug("New inference task started.")
+                    bt.logging.info("New inference task started.")
                 except Exception as e:
                     bt.logging.error(f"Error starting new inference: {e}")
 
